@@ -1,6 +1,6 @@
 {
   "name": "@vn.unifyid/integrity-verifier",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Verify UnifyID records against signed, hash-chained checkpoints without trusting UnifyID: the record's Merkle proof, UnifyID's signature, and the checkpoint on UnifyID's anchor contract and Sign Protocol on Base (chain 8453; Base Sepolia 84532 for testing).",
   "license": "MIT",
   "repository": {
