@@ -5,8 +5,13 @@ name: Release
 # this repository at that commit, by this workflow, so nobody has to take the
 # published code on trust.
 #
-# Needs the repository secret NPM_TOKEN: an npm automation token for the
-# vn.unifyid organisation, allowed to publish this package.
+# It publishes through npm trusted publishing: the package's settings on
+# npmjs.com name this repository and release.yml as its trusted publisher, and
+# npm accepts the job's short-lived GitHub identity (id-token: write) in place
+# of a token. No npm token is stored anywhere. Trusted publishing needs npm
+# 11.5.1 or later, newer than the npm that ships with Node 22, hence the step
+# that installs it. (1.0.0 was published once with a short-lived token, because
+# a package must exist on npm before it can name a trusted publisher.)
 #
 # The source of this file is UnifyID's API repository
 # (packages/integrity-verifier); it is copied here by
@@ -57,7 +62,8 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: npm with trusted publishing
+        run: npm install --global npm@11
+
       - name: Publish
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
