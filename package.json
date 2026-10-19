@@ -1,0 +1,61 @@
+{
+  "name": "@vn.unifyid/integrity-verifier",
+  "version": "1.0.0",
+  "description": "Verify UnifyID records against signed, hash-chained checkpoints without trusting UnifyID: the record's Merkle proof, UnifyID's signature, and the checkpoint on UnifyID's anchor contract and Sign Protocol on Base (chain 8453; Base Sepolia 84532 for testing).",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VerifyNova/integrity-verifier.git"
+  },
+  "homepage": "https://developer.unifyid.com/documentation/trust/proof-bundles",
+  "bugs": {
+    "url": "https://github.com/VerifyNova/integrity-verifier/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "unifyid-integrity-verify": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "unifyid",
+    "transparency",
+    "merkle",
+    "rfc6962",
+    "verifier",
+    "base",
+    "sign-protocol"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "viem": "2.56.2"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  }
+}

@@ -1,0 +1,63 @@
+name: Release
+
+# Publishes @vn.unifyid/integrity-verifier to npm when a tag v<version> is
+# pushed, with npm provenance: npm then shows that the package was built from
+# this repository at that commit, by this workflow, so nobody has to take the
+# published code on trust.
+#
+# Needs the repository secret NPM_TOKEN: an npm automation token for the
+# vn.unifyid organisation, allowed to publish this package.
+#
+# The source of this file is UnifyID's API repository
+# (packages/integrity-verifier); it is copied here by
+# scripts/trust-layer/sync-integrity-verifier.mjs.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish to npm with provenance
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      # A tag that names another version would publish something nobody
+      # reviewed under the wrong number, so it stops here.
+      - name: The tag is the package version
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version: tag v$version, or change the version."
+            exit 1
+          fi
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Publish
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

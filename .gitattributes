@@ -1,0 +1,2 @@
+# One line ending everywhere, so a checkout on any system builds and syncs byte for byte.
+* text=auto eol=lf
